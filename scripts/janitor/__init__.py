@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
-
-from std_msgs.msg import Int8MultiArray
-from geometry_msgs.msg import Twist, Vector3
+from tf.transformations import euler_from_quaternion
+from geometry_msgs.msg import Twist, Vector3, Pose
 from sensor_msgs.msg import LaserScan
+from nav_msgs.msg import Odometry
+from visualization_msgs.msg import Marker
 
 import rospy
 import roslib
@@ -20,7 +20,10 @@ class Janitor(threading.Thread):
     def __init__(self, rate=0):
         super(Janitor, self).__init__()
         self.publisher = rospy.Publisher('cmd_vel', Twist, queue_size = 1)
+        self.visualizer = rospy.Publisher('visualization_marker', Marker, queue_size=10)
+        self.position = None
         rospy.Subscriber('/scan', LaserScan, self._process_scan)
+        rospy.Subscriber('/odom', Odometry, self._convert_pose_to_xy_and_theta)
         self.go = 0.0
         self.rotate = 0.0
         self.speed = 0.0
@@ -55,6 +58,12 @@ class Janitor(threading.Thread):
     		'ne': min(min(msg.ranges[316:361]),10)
     	}
     	self.scan = msg
+
+    def _convert_pose_to_xy_and_theta(self, msg):
+        pose = msg.pose.pose
+        orientation_tuple = (pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w)
+        angles = euler_from_quaternion(orientation_tuple)
+        self.position = (pose.position.x, pose.position.y, angles[2])
 
     def _update(self, go, rotate, speed):
         self.condition.acquire()
@@ -103,12 +112,27 @@ class Janitor(threading.Thread):
     def drive(self, _go, _rotate, _speed=speeds['slow']):
         self._update(_go, _rotate, _speed)
 
-    def teleop(self, command):
-        if command is 'w':
-            self.go_forward()
-        elif command is 'a':
-            self.go_left()
-        elif command is 'd':
-            self.go_right()
-        else:
-            self.drive(0,0)
+    def visualize(self, name, frame, marker_type, position, scale):
+        if position is not None:
+            marker = Marker();
+            marker.header.frame_id = frame;
+            marker.header.stamp = rospy.Time.now();
+            marker.ns = name;
+            marker.id = 0;
+            marker.type = marker_type;
+            marker.action = Marker.ADD;
+            marker.pose.position.x = position[0];
+            marker.pose.position.y = position[1];
+            marker.pose.position.z = 0;
+            marker.pose.orientation.x = 0;
+            marker.pose.orientation.y = 0;
+            marker.pose.orientation.z = position[2];
+            marker.pose.orientation.w = 1.0;
+            marker.scale.x = scale[0];
+            marker.scale.y = scale[1];
+            marker.scale.z = scale[2];
+            marker.color.a = 0.5; # Don't forget to set the alpha!
+            marker.color.r = 0.0;
+            marker.color.g = 1.0;
+            marker.color.b = 0.0;
+            self.visualizer.publish(marker)

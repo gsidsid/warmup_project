@@ -25,7 +25,15 @@ neato.drive(0,0)
 
 while key != '\x03':
     key = getKey()
-    neato.teleop(key)
+    if key is 'w':
+        print(key)
+        neato.drive(1,0)
+    elif key is 'a':
+        neato.drive(0,-1)
+    elif key is 'd':
+        neato.drive(0,1)
+    else:
+        neato.drive(0,0)
 
 neato._stop()
 termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)

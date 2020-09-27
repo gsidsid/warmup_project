@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 from janitor import Janitor
+from visualization_msgs.msg import Marker
+
 from time import sleep
 
 import rospy
 
 class WallFollowingNode(object):
 	def __init__(self):
-		rospy.init_node('drive_square')
+		rospy.init_node('wall_following')
 		self.neato = Janitor()
 		self.neato.connect()
 		self.neato.drive(0,0)
@@ -38,6 +40,11 @@ class WallFollowingNode(object):
 			self.neato.go_right()
 		elif self.radar_boundary(inside=['nw','ne'], outside=['n']):
 			self.neato.drive(0.8,-0.5)
+
+		if self.neato.position is not None:
+			self.neato.visualize('wall', 'base_link', Marker.CUBE, 
+				(1, 1.25, 0),
+				(5,0.3,5))
 
 	def run(self):
 		while not rospy.is_shutdown():

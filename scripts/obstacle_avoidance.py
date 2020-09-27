@@ -7,35 +7,23 @@ import rospy
 
 class ObstacleAvoidanceNode(object):
 	def __init__(self):
-		rospy.init_node('drive_square')
+		rospy.init_node('obstacle_avoidance')
 		self.neato = Janitor()
 		self.neato.connect()
 		self.neato.drive(0,0)
 
-	def radar_boundary(self, inside = [], outside = [], d = 3):
-		radar = self.neato.radar
-		sat = True
-		for direction in inside:
-			sat = sat and radar[direction] < d
-		for direction in outside:
-			sat = sat and radar[direction] > d
-		return sat
-
-	def states(self):
-		if self.radar_boundary(inside=['nw'], outside=['n', 'ne']):
-			self.neato.drive(0.4,-1)
-		elif self.radar_boundary(inside=['n','nw'], outside=['ne']):
-			self.neato.drive(0.4,-0.8)
-		elif self.radar_boundary(inside=['ne'], outside=['n', 'nw']):
-			self.neato.drive(0.4,1)
-		elif self.radar_boundary(inside=['n','ne'], outside=['nw']):
-			self.neato.drive(0.4,0.8)
-		elif self.radar_boundary(inside=['n']):
-			self.neato.drive(0.8,0)
+	def states(self, theta):
+		trim = 1.3*(theta-self.neato.position[2])
+		trim -= 2/self.neato.radar['ne']
+		trim += 2/self.neato.radar['nw']
+		go = min(self.neato.radar['n']/2,0.7)
+		self.neato.drive(go, trim)
 
 	def run(self):
-		while not rospy.is_shutdown():
-			self.states()
+		if self.neato.position is not None:
+			theta = self.neato.position[2]
+			while not rospy.is_shutdown():
+				self.states(theta)
 
 	def stop(self):
 		self.neato._stop()
@@ -43,4 +31,4 @@ class ObstacleAvoidanceNode(object):
 if __name__ == '__main__':
 	obstacleAvoidanceNode = ObstacleAvoidanceNode()
 	obstacleAvoidanceNode.run()
-	obstacleAvoidanceNode.stop()
+	obstacleAvoidanceNode.stop() 
