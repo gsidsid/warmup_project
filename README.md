@@ -53,7 +53,7 @@ On meeting none of the cases, the last action is continued.
 
 ![person](screenshots/person.gif)
 
-Exclusions of N, NW, and NE can be used to control the robot in a similar fashion as the above. On checking for satisfying cases here, an additional check is done to immobilize the robot upon being 1m in proximity to "the person" object. Cases here involve:
+Exclusions of N, NW, and NE can be used to control the robot in a similar fashion as the above. On checking for satisfying cases here, an additional check is done to immobilize the robot upon being 1m in proximity to the "person" object. Cases here involve:
 
 * **INSIDE NE; OUTSIDE N NW**: Turn right
 * **INSIDE NW; OUTSIDE N NE**: Turn left
@@ -71,7 +71,7 @@ No cases, here. Instead, I took three steps to ensure the robot avoids obstacles
 * Modify this angular velocity by an equation of the form `k/[distance reading]` in both the NW and NE directions (with opposite signs)
 * Set the linear velocity to `[distance reading]/k` for the reading in the N direction
 
-Choosing constants that allow these to interact appropriately, this is enough to achieve basic obstacle avoidance, while keeping heading.
+Choosing constants that allow these to interact appropriately makes this enough to achieve basic obstacle avoidance, while keeping heading.
 
 ## Finite state controller
 
