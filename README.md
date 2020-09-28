@@ -68,7 +68,7 @@ Exclusions of N, NW, and NE can be used to control the robot in a similar fashio
 No cases, here. Instead, I took three steps to ensure the robot avoids obstacles and attempts to maintain its original course. 
 
 * Proportional control the angular velocity to remain close to the original orientation
-* Modify this angular velocity by an equation of the form `k/[distance reading]` in both the NW and NE directions (with opposite sides
+* Modify this angular velocity by an equation of the form `k/[distance reading]` in both the NW and NE directions (with opposite signs)
 * Set the linear velocity to `[distance reading]/k` for the reading in the N direction
 
 Choosing constants that allow these to interact appropriately, this is enough to achieve basic obstacle avoidance, while keeping heading.
