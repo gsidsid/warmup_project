@@ -25,11 +25,15 @@ If you really wanted to you could easily add trim buttons to play around with ve
 
 ## Drive in a square
 
+![square](screenshots/square.gif)
+
 Makes the robot turn right for 3.12 seconds. Makes the robot go forward for 3 seconds. Repeats.
 
 Timing the 90 degree turn took a couple tries. I understand it's recommended to use the robot clock for timing, but I went with time.sleep as this is not a particularly intricate behaviour.
 
 ## Following a wall
+
+![wall](screenshots/wall.gif)
 
 A method validates if there are detections within a distance threshold in the inter/cardinal directions I filter scan data into by default, separating this into eight straightforward cases that try to keep and track the wall on the east.
 
@@ -47,6 +51,8 @@ On meeting none of the cases, the last action is continued.
 
 ## Following a person
 
+![person](screenshots/person.gif)
+
 Exclusions of N, NW, and NE can be used to control the robot in a similar fashion as the above. On checking for satisfying cases here, an additional check is done to immobilize the robot upon being 1m in proximity to "the person" object. Cases here involve:
 
 * **INSIDE NE; OUTSIDE N NW**: Turn right
@@ -57,6 +63,8 @@ Exclusions of N, NW, and NE can be used to control the robot in a similar fashio
 
 ## Avoiding obstacles
 
+![avoid](screenshots/avoid.gif)
+
 No cases, here. Instead, I took three steps to ensure the robot avoids obstacles and attempts to maintain its original course. 
 
 * Proportional control the angular velocity to remain close to the original orientation
@@ -66,6 +74,8 @@ No cases, here. Instead, I took three steps to ensure the robot avoids obstacles
 Choosing constants that allow these to interact appropriately, this is enough to achieve basic obstacle avoidance, while keeping heading.
 
 ## Finite state controller
+
+![fsc](screenshots/fsc.gif)
 
 Here, I combined the behaviours of following a wall, and following a person. The condition to switch between the states was determined by the proximity of the nearest object. By default, the robot follows a wall at a range of 2m. If an object enters within 1m of the robot, the robot decides to follow the object instead, and leaves the wall.
 
