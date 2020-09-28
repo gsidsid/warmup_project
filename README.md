@@ -1,5 +1,7 @@
 # Computational Robotics: Warming up
 _ENGR3590: A Computational Introduction to Robotics, Olin College of Engineering, FA2020_
+
+
 _Siddharth Garimella_
 
 Descriptions of my approaches to a series of exercises used to develop familiarity with the simulation tooling/robot platform follow.
