@@ -35,7 +35,7 @@ Timing the 90 degree turn took a couple tries. I understand it's recommended to 
 
 ![wall](screenshots/wall.gif)
 
-A method validates if there are detections within a distance threshold in the inter/cardinal directions I filter scan data into by default, separating this into eight straightforward cases that try to keep and track the wall on the east.
+A method validates if there are detections within a distance threshold in the inter/cardinal directions I filter scan data into by default, separating this into eight straightforward cases that try to keep and track the wall on the east. I suspect I may have my directions mixed up, but the key is keeping the wall on one side.
 
 * **OUTSIDE N NW NE**: Find the wall, slight left to do so
 * **INSIDE N; OUTSIDE NW NE**: About to run into something, turn right to avoid
